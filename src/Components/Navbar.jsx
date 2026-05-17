@@ -2,29 +2,17 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import ToggleTheme from "./ToggleTheme";
+import MyNavLink from "./MyNavLink"; // Imported your custom link element
 
 const Navbar = () => {
+    // Replaced standard Next.js Links with your smart conditional Link component
     const navLinks = (
         <>
-            <li>
-                <Link href="/">Home</Link>
-            </li>
-
-            <li>
-                <Link href="/ideas">Ideas</Link>
-            </li>
-
-            <li>
-                <Link href="/add-idea">Add Idea</Link>
-            </li>
-
-            <li>
-                <Link href="/my-ideas">My Ideas</Link>
-            </li>
-
-            <li>
-                <Link href="/my-interactions">My Interactions</Link>
-            </li>
+            <MyNavLink href="/">Home</MyNavLink>
+            <MyNavLink href="/ideas">Ideas</MyNavLink>
+            <MyNavLink href="/add-idea">Add Idea</MyNavLink>
+            <MyNavLink href="/my-ideas">My Ideas</MyNavLink>
+            <MyNavLink href="/my-interactions">My Interactions</MyNavLink>
         </>
     );
 
@@ -60,7 +48,7 @@ const Navbar = () => {
 
                         <ul
                             tabIndex={0}
-                            className="menu menu-sm dropdown-content mt-3 z-[1] p-3 shadow bg-base-100 rounded-box w-64"
+                            className="menu menu-sm dropdown-content mt-3 z-[1] p-3 shadow bg-base-100 rounded-box w-64 gap-1"
                         >
                             {navLinks}
                         </ul>
@@ -78,7 +66,6 @@ const Navbar = () => {
                             alt="IdeaVault Logo"
                             className="rounded-full"
                         />
-
                         <span className="hidden sm:block text-primary">
                             IdeaVault
                         </span>
@@ -94,9 +81,7 @@ const Navbar = () => {
 
                 {/* Navbar End */}
                 <div className="navbar-end gap-2">
-
                     {/* Theme Button */}
-
                     <ToggleTheme />
 
                     {/* Login Button */}
