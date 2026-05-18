@@ -1,10 +1,12 @@
+import IdeaCard from '@/Components/IdeaCard';
 import React from 'react';
-import IdeaCard from './IdeaCard'; 
+
+
 const TrendingIdeas = async () => {
     let ideaData = [];
     
     try {
-        const ideas = await fetch(`${process.env.SERVER_URI}/ideas-for-home`);
+        const ideas = await fetch(`${process.env.SERVER_URI}/ideas`);
         ideaData = await ideas.json();
     } catch (error) {
         console.error("Failed to fetch trending ideas:", error);
@@ -15,7 +17,7 @@ const TrendingIdeas = async () => {
             <div className="flex flex-col mb-8">
                 <span className="text-xs font-bold uppercase tracking-widest text-primary mb-1">Inspirations</span>
                 <h2 className="font-extrabold text-3xl md:text-4xl text-base-content">
-                    Trending Startup Ideas
+                    All Startup Ideas
                 </h2>
                 <div className="w-16 h-1 bg-primary rounded-full mt-3"></div>
             </div>
