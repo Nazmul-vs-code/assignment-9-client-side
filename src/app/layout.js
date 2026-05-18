@@ -9,7 +9,7 @@ import { ToastContainer } from "react-toastify";
 export default function RootLayout({ children }) {
   return (
     <html
-      data-theme='light'
+      
       lang="en"
       className={` h-full antialiased`}
     >
