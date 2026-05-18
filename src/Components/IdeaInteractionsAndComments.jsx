@@ -6,6 +6,9 @@ import React, { useState, useEffect } from 'react';
 import { FaRegHeart, FaHeart, FaCommentAlt, FaPaperPlane, FaEllipsisV, FaTrash, FaEdit } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import DeleteModal from './DeleteModal';
+import UpdateCommentModal from './UpdateCommentModal';
+
+
 
 const IdeaInteractionsAndComments = ({ ideaId }) => {
     const router = useRouter();
@@ -120,9 +123,22 @@ const IdeaInteractionsAndComments = ({ ideaId }) => {
                                         </div>
                                         <ul tabIndex={0} className="dropdown-content menu p-1 shadow-md bg-base-100 rounded-xl w-28 z-[10] border border-base-200 text-xs">
                                             <li>
-                                                <button type="button" className="py-2 gap-2 text-base-content">
-                                                    <FaEdit /> Edit
+                                                {/* Trigger Button */}
+                                                <button
+                                                    type="button"
+                                                    onClick={() => document.getElementById(`edit_modal_${item.id}`).showModal()}
+                                                    className="py-2 gap-2 text-base-content w-full text-left flex items-center"
+                                                >
+                                                    Edit
                                                 </button>
+
+                                                {/* Simple Modal Instance */}
+                                                <UpdateCommentModal
+                                                
+                                                    modalId={`edit_modal_${item.id}`}
+                                                    commentId={item.id}
+                                                    initialText={item.text}
+                                                />
                                             </li>
                                             <li>
                                                 {/* 1. Trigger Button */}
