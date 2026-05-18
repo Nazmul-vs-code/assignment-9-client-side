@@ -1,28 +1,48 @@
+"use client";
 
-import { auth } from '@/lib/auth';
-import { headers } from 'next/headers';
-import React from 'react';
+import { authClient } from '@/lib/auth-client';
+import React, { useState, useEffect } from 'react';
+import DeleteIdeaModal from '@/components/DeleteIdeaModal';
 
-const MyIdeasPage = async () => {
-
-    const session = await auth.api.getSession({
-        headers: await headers()
-    })
+const MyIdeasPage = () => {
+    const { data: session, isPending } = authClient.useSession();
     const user = session?.user;
 
-    let ideas = [];
+    const [ideas, setIdeas] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    if (user?.id) {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URI}/my-ideas?authorId=${user.id}`);
-        if (res.ok) {
-            ideas = await res.json();
+    useEffect(() => {
+        if (isPending) return;
+        if (!user?.id) {
+            setLoading(false);
+            return;
         }
-    }
 
+        fetch(`${process.env.NEXT_PUBLIC_SERVER_URI}/my-ideas?authorId=${user.id}`)
+            .then((res) => {
+                if (res.ok) return res.json();
+                throw new Error("Failed to load vault items.");
+            })
+            .then((data) => {
+                setIdeas(data);
+                setLoading(false);
+            })
+            .catch((err) => {
+                console.error("Error fetching vault data:", err);
+                setLoading(false);
+            });
+    }, [user?.id, isPending]);
+
+    if (loading || isPending) {
+        return (
+            <div className="flex justify-center items-center min-h-[50vh]">
+                <span className="loading loading-spinner loading-md text-primary"></span>
+            </div>
+        );
+    }
 
     return (
         <div className="py-10 px-4 max-w-6xl mx-auto">
-
             <div className="mb-8">
                 <h2 className="text-primary font-bold text-2xl md:text-3xl tracking-tight">
                     My Idea Vault
@@ -32,44 +52,54 @@ const MyIdeasPage = async () => {
                 </p>
             </div>
 
-        {/* Ideas added by user here */}
-        <dvi className="">
-            {ideas.length === 0 ? (
-                <div className="text-center py-12 border border-dashed border-base-300 rounded-2xl">
-                    <p className="text-sm text-base-content/50">You have not added any ideas yet.</p>
-                </div>
-            ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {ideas.map((idea) => (
-                        <div key={idea._id} className="p-5 border border-base-200 bg-base-100 rounded-2xl shadow-sm flex flex-col justify-between">
-                            <div>
-                                <span className="text-[10px] font-semibold tracking-wider uppercase text-primary bg-primary/10 px-2.5 py-1 rounded-md">
-                                    {idea.category}
-                                </span>
-                                <h3 className="font-bold text-base mt-3 text-base-content line-clamp-1">
-                                    {idea.ideaTitle}
-                                </h3>
-                                <p className="text-xs text-base-content/70 mt-1 line-clamp-2">
-                                    {idea.shortDescription}
-                                </p>
-                            </div>
+            <div className="main-vault-wrapper">
+                {ideas.length === 0 ? (
+                    <div className="text-center py-12 border border-dashed border-base-300 rounded-2xl">
+                        <p className="text-sm text-base-content/50">You have not added any ideas yet.</p>
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {ideas.map((idea) => {
+                            const instanceModalId = `delete_modal_${idea._id}`;
 
-                            {/* Action Buttons Container */}
-                            <div className="flex items-center justify-end gap-2 mt-5 pt-3 border-t border-base-100">
-                                <button className="btn btn-ghost btn-sm text-xs rounded-xl text-base-content/70 hover:text-primary">
-                                    Update
-                                </button>
-                                <button className="btn btn-ghost btn-sm text-xs rounded-xl text-error/80 hover:bg-error/10 hover:text-error">
-                                    Delete
-                                </button>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            )}
-        </dvi>
+                            return (
+                                <div key={idea._id} className="p-5 border border-base-200 bg-base-100 rounded-2xl shadow-sm flex flex-col justify-between">
+                                    <div>
+                                        <span className="text-[10px] font-semibold tracking-wider uppercase text-primary bg-primary/10 px-2.5 py-1 rounded-md">
+                                            {idea.category}
+                                        </span>
+                                        <h3 className="font-bold text-base mt-3 text-base-content line-clamp-1">
+                                            {idea.ideaTitle}
+                                        </h3>
+                                        <p className="text-xs text-base-content/70 mt-1 line-clamp-2">
+                                            {idea.shortDescription}
+                                        </p>
+                                    </div>
 
+                                    <div className="flex items-center justify-end gap-2 mt-5 pt-3 border-t border-base-100">
+                                        <button className="btn btn-ghost btn-sm text-xs rounded-xl text-base-content/70 hover:text-primary">
+                                            Update
+                                        </button>
+                                        
+                                        <button 
+                                            type="button"
+                                            onClick={() => document.getElementById(instanceModalId).showModal()}
+                                            className="btn btn-ghost btn-sm text-xs rounded-xl text-error/80 hover:bg-error/10 hover:text-error"
+                                        >
+                                            Delete
+                                        </button>
 
+                                        <DeleteIdeaModal 
+                                            ideaId={idea._id} 
+                                            modalId={instanceModalId} 
+                                        />
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                )}
+            </div>
         </div>
     );
 };
