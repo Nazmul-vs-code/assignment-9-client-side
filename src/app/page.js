@@ -1,4 +1,5 @@
 import HeroSlider from "@/Components/Heros/HeroSlider";
+import TrendingIdeas from "@/Components/TrendingIdeas";
 import Image from "next/image";
 
 export default function Home() {
@@ -7,7 +8,8 @@ export default function Home() {
       
       <HeroSlider />
 
-      <h2 className="text-red-500 font-semibold text-2xl">Trending Ideas </h2>
+      
+      <TrendingIdeas />
     </div>
   );
 }
