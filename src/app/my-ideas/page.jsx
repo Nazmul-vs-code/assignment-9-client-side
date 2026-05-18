@@ -3,6 +3,7 @@
 import { authClient } from '@/lib/auth-client';
 import React, { useState, useEffect } from 'react';
 import DeleteIdeaModal from '@/components/DeleteIdeaModal';
+import EditMyIdeaModal from '@/Components/EditMyIdeaModal';
 
 const MyIdeasPage = () => {
     const { data: session, isPending } = authClient.useSession();
@@ -60,7 +61,8 @@ const MyIdeasPage = () => {
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {ideas.map((idea) => {
-                            const instanceModalId = `delete_modal_${idea._id}`;
+                            const deleteModalId = `delete_modal_${idea._id}`;
+                            const editModalId = `edit_modal_${idea._id}`;
 
                             return (
                                 <div key={idea._id} className="p-5 border border-base-200 bg-base-100 rounded-2xl shadow-sm flex flex-col justify-between">
@@ -77,21 +79,30 @@ const MyIdeasPage = () => {
                                     </div>
 
                                     <div className="flex items-center justify-end gap-2 mt-5 pt-3 border-t border-base-100">
-                                        <button className="btn btn-ghost btn-sm text-xs rounded-xl text-base-content/70 hover:text-primary">
+                                        <button
+                                            type="button"
+                                            onClick={() => document.getElementById(editModalId).showModal()}
+                                            className="btn btn-ghost btn-sm text-xs rounded-xl text-base-content/70 hover:text-primary"
+                                        >
                                             Update
                                         </button>
-                                        
-                                        <button 
+
+                                        <button
                                             type="button"
-                                            onClick={() => document.getElementById(instanceModalId).showModal()}
+                                            onClick={() => document.getElementById(deleteModalId).showModal()}
                                             className="btn btn-ghost btn-sm text-xs rounded-xl text-error/80 hover:bg-error/10 hover:text-error"
                                         >
                                             Delete
                                         </button>
 
-                                        <DeleteIdeaModal 
-                                            ideaId={idea._id} 
-                                            modalId={instanceModalId} 
+                                        <DeleteIdeaModal
+                                            ideaId={idea._id}
+                                            modalId={deleteModalId}
+                                        />
+
+                                        <EditMyIdeaModal
+                                            idea={idea}
+                                            modalId={editModalId}
                                         />
                                     </div>
                                 </div>
