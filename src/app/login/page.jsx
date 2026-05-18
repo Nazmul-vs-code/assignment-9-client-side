@@ -74,16 +74,21 @@ const LoginPage = () => {
                                 />
                             </div>
                         </div>
+                        <div className="flex gap-2 justify-between">
 
-                        <button type="submit" className="btn btn-primary mt-8 w-full rounded-xl font-bold text-white shadow-sm">
-                            Access Vault
-                        </button>
+                            <button type="submit" className="btn btn-primary mt-8 w-[50%]  font-bold text-white shadow-sm">
+                                Access Vault
+                            </button>
+                            <button type="button" className="btn btn-accent mt-8  w-[50%] font-bold  shadow-sm text-black">
+                                Forgot password ?
+                            </button>
+                        </div>
                     </fieldset>
                 </form>
                 <div className="">
-                    <button 
-                    onClick={handleGoogleSignIn}
-                    className="btn btn-outline w-full font-bold mt-2">
+                    <button
+                        onClick={handleGoogleSignIn}
+                        className="btn btn-outline w-full font-bold mt-2">
                         <FcGoogle />  Continue with google
                     </button>
 

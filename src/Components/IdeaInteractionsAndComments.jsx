@@ -1,53 +1,77 @@
 "use client";
 
-import React, { useState } from 'react';
+import { authClient } from '@/lib/auth-client';
+import { useRouter } from 'next/navigation';
+import React, { useState, useEffect } from 'react';
 import { FaRegHeart, FaHeart, FaCommentAlt, FaPaperPlane, FaEllipsisV, FaTrash, FaEdit } from 'react-icons/fa';
+import { toast } from 'react-toastify';
 
 const IdeaInteractionsAndComments = ({ ideaId }) => {
+    const router = useRouter();
+    const { data: session, isPending } = authClient.useSession();
+    const user = session?.user;
+    // console.log(user , ' user in comment ')
+
+
     const [isLiked, setIsLiked] = useState(false);
-    const [likeCount, setLikeCount] = useState(0); // Set baseline metrics to 0
+    const [likeCount, setLikeCount] = useState(0);
 
-    // FIXED: Removed the mock default comments array to start completely fresh
+    // Normal storage array for your fetched comments
     const [comments, setComments] = useState([]);
-    
-    const [newCommentText, setNewCommentText] = useState("");
-    const [editingCommentId, setEditingCommentId] = useState(null);
-    const [editText, setEditText] = useState("");
 
-    // Submit actions handler
-    const handleAddComment = (e) => {
+    // Normal fetching on component load
+    useEffect(() => {
+        if (!ideaId) return;
+
+        fetch(`${process.env.NEXT_PUBLIC_SERVER_URI}/comments?ideaId=${ideaId}`)
+            .then(res => res.json())
+            .then(data => setComments(data))
+            .catch(err => console.error("Error fetching comments:", err));
+    }, [ideaId]);
+
+    // Simple submission capturing raw values natively via FormData
+    const handleAddComment = async (e) => {
         e.preventDefault();
-        if (!newCommentText.trim()) return;
 
-        const newComment = {
+        const formData = new FormData(e.currentTarget);
+        const text = formData.get("commentText")?.trim();
+
+        if (!text) return;
+
+        const myComment = {
             id: Date.now(),
-            user: "You (Creator)",
-            avatar: "https://i.pravatar.cc/100?img=12",
-            text: newCommentText,
-            isOwn: true
+            ideaId: ideaId,
+            authorId: user.id,
+            userImage: user.image,
+            text: text,
+            currentDate: new Date().toISOString()
         };
-        setComments([...comments, newComment]);
-        setNewCommentText("");
-    };
 
-    // Save modified changes
-    const handleSaveEdit = (id) => {
-        setComments(comments.map(c => c.id === id ? { ...c, text: editText } : c));
-        setEditingCommentId(null);
-        setEditText("");
-    };
+        // console.log(myComment, " COMMENT DATA ");
+        e.currentTarget.reset();
 
-    // Delete handling
-    const handleDeleteComment = (id) => {
-        setComments(comments.filter(c => c.id !== id));
+        const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URI}/add-comments`, {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify(myComment)
+
+        })
+        const data = await res.json()
+
+
+        if (data.acknowledged) {
+            window.location.reload();
+        }
     };
 
     return (
         <div className="bg-base-100 border border-base-200 rounded-2xl shadow-sm overflow-hidden">
-            
-            {/* Quick Action Interaction Counter Ribbon */}
+
+            {/* Quick Action Interaction Ribbon */}
             <div className="p-4 border-b border-base-200 flex items-center justify-around bg-base-50/50">
-                <button 
+                <button
                     onClick={() => { setIsLiked(!isLiked); setLikeCount(isLiked ? likeCount - 1 : likeCount + 1); }}
                     className={`flex items-center gap-2 font-semibold text-sm btn btn-ghost btn-sm rounded-xl px-4 ${isLiked ? 'text-red-500 bg-red-50' : 'text-base-content/70'}`}
                 >
@@ -62,7 +86,6 @@ const IdeaInteractionsAndComments = ({ ideaId }) => {
 
             {/* Comments Stream Wrapper */}
             <div className="p-4 space-y-4 max-h-[380px] overflow-y-auto bg-base-100">
-                {/* FIXED: Conditional render for when the comment section is empty */}
                 {comments.length === 0 ? (
                     <div className="text-center py-8 px-4">
                         <FaCommentAlt className="text-3xl text-base-content/20 mx-auto mb-2" />
@@ -70,75 +93,58 @@ const IdeaInteractionsAndComments = ({ ideaId }) => {
                         <p className="text-xs text-base-content/40 mt-0.5">Be the first to share your thoughts!</p>
                     </div>
                 ) : (
-                    comments.map((comment) => (
-                        <div key={comment.id} className="flex gap-3 items-start group">
-                            
-                            {/* User Profile Avatar */}
+                    comments.map((item, index) => (
+                        <div key={item._id || index} className="flex gap-3 items-start group">
+
                             <div className="avatar">
                                 <div className="w-8 h-8 rounded-full">
-                                    <img src={comment.avatar} alt={comment.user} />
+                                    <img src={item?.userImage} alt={item?.name} />
                                 </div>
                             </div>
 
-                            {/* Comment Core Speech Bubble layout */}
                             <div className="flex-grow min-w-0 bg-base-200/60 rounded-2xl px-3 py-2 relative">
                                 <div className="flex items-center justify-between gap-2">
-                                    <span className="font-bold text-xs text-base-content">{comment.user}</span>
-                                    
-                                    {/* Only Render Edit/Delete controls if it's the owner's comment */}
-                                    {comment.isOwn && (
-                                        <div className="dropdown dropdown-end dropdown-bottom">
-                                            <div tabIndex={0} role="button" className="p-1 text-base-content/40 hover:text-base-content opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
-                                                <FaEllipsisV className="text-xs" />
-                                            </div>
-                                            <ul tabIndex={0} className="dropdown-content menu p-1 shadow-md bg-base-100 rounded-xl w-28 z-[10] border border-base-200 text-xs">
-                                                <li>
-                                                    <button onClick={() => { setEditingCommentId(comment.id); setEditText(comment.text); }} className="py-2 gap-2 text-base-content">
-                                                        <FaEdit /> Edit
-                                                    </button>
-                                                </li>
-                                                <li>
-                                                    <button onClick={() => handleDeleteComment(comment.id)} className="py-2 gap-2 text-error hover:bg-error/10">
-                                                        <FaTrash /> Delete
-                                                    </button>
-                                                </li>
-                                            </ul>
+                                    <span className="font-bold text-xs text-base-content">{item?.name}</span>
+
+                                    <span className="text-[30%]">{item?.currentDate}</span>
+
+                                    {/* Edit and Delete Action UI dropdown elements */}
+                                    <div className="dropdown dropdown-end dropdown-bottom">
+                                        <div tabIndex={0} role="button" className="p-1 text-base-content/40 hover:text-base-content opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                                            <FaEllipsisV className="text-xs" />
                                         </div>
-                                    )}
+                                        <ul tabIndex={0} className="dropdown-content menu p-1 shadow-md bg-base-100 rounded-xl w-28 z-[10] border border-base-200 text-xs">
+                                            <li>
+                                                <button type="button" className="py-2 gap-2 text-base-content">
+                                                    <FaEdit /> Edit
+                                                </button>
+                                            </li>
+                                            <li>
+                                                <button type="button" className="py-2 gap-2 text-error hover:bg-error/10">
+                                                    <FaTrash /> Delete
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
 
-                                {/* Conditional Display: Standard message vs Edit Mode Form Field */}
-                                {editingCommentId === comment.id ? (
-                                    <div className="mt-1 space-y-1.5">
-                                        <textarea 
-                                            className="textarea textarea-bordered textarea-xs w-full bg-base-100" 
-                                            value={editText} 
-                                            onChange={(e) => setEditText(e.target.value)}
-                                        />
-                                        <div className="flex justify-end gap-1">
-                                            <button onClick={() => setEditingCommentId(null)} className="btn btn-ghost btn-xs rounded-md">Cancel</button>
-                                            <button onClick={() => handleSaveEdit(comment.id)} className="btn btn-primary btn-xs rounded-md px-3">Save</button>
-                                        </div>
-                                    </div>
-                                ) : (
-                                    <p className="text-sm text-base-content/90 mt-0.5 break-words leading-relaxed">
-                                        {comment.text}
-                                    </p>
-                                )}
+                                <p className="text-sm text-base-content/90 mt-0.5 break-words leading-relaxed">
+                                    {item.text}
+                                </p>
                             </div>
                         </div>
                     ))
                 )}
             </div>
 
-            {/* Add Comment Bottom Input Field Sticky Footer */}
+            {/* Add Comment Form Sticky Footer */}
             <form onSubmit={handleAddComment} className="p-3 bg-base-200/50 border-t border-base-200 flex gap-2 items-center">
-                <input 
-                    type="text" 
-                    placeholder="Share your thoughts on this idea..." 
+                <input
+                    type="text"
+                    name="commentText"
+                    placeholder="Share your thoughts on this idea..."
                     className="input input-sm input-bordered flex-grow bg-base-100 rounded-xl"
-                    value={newCommentText}
-                    onChange={(e) => setNewCommentText(e.target.value)}
+                    required
                 />
                 <button type="submit" className="btn btn-primary btn-sm btn-square rounded-xl text-white">
                     <FaPaperPlane className="text-xs" />
