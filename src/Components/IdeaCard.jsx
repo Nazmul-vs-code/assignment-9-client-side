@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import React from 'react';
 import { FaDollarSign, FaTag, FaArrowRight, FaLightbulb } from 'react-icons/fa';
 
@@ -11,6 +12,7 @@ const IdeaCard = ({ idea }) => {
         tags = [],
         imageURL,
         estimatedBudget,
+        _id,
     } = idea;
 
     return (
@@ -67,7 +69,7 @@ const IdeaCard = ({ idea }) => {
                     </div>
 
                     <button className="btn btn-neutral btn-sm rounded-full gap-2 font-medium group">
-                        Explore 
+                        <Link href={`/ideas/${_id}`}>Explore</Link> 
                         <FaArrowRight className="text-xs transition-transform duration-200 group-hover:translate-x-1" />
                     </button>
                 </div>
