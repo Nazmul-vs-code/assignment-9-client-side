@@ -1,8 +1,11 @@
 "use client";
 
+import { authClient } from '@/lib/auth-client';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 import React, { useState } from 'react';
 import { FaUser, FaEnvelope, FaLink, FaLock, FaEye, FaEyeSlash, FaLightbulb, FaExclamationCircle } from 'react-icons/fa';
+import { FcGoogle } from 'react-icons/fc';
 import { toast } from 'react-toastify';
 
 const SignUpPage = () => {
@@ -10,18 +13,19 @@ const SignUpPage = () => {
     // State to hold and display custom password validation errors
     const [validationError, setValidationError] = useState("");
 
-    const handleSignUpSubmit = (e) => {
+    const handleSignUpSubmit = async (e) => {
         e.preventDefault();
         setValidationError(""); // Clear previous errors
 
         const form = e.target;
         const name = form.name.value;
         const email = form.email.value;
-        const photoURL = form.photoURL.value;
+        const image = form.image.value;
+
         const password = form.password.value;
 
         // --- Custom Password Validations ---
-        
+
         // 1. Minimum 6 characters check
         if (password.length < 6) {
             setValidationError("Password must be at least 6 characters long.");
@@ -40,21 +44,40 @@ const SignUpPage = () => {
             return;
         }
 
-        // If all validation rules pass:
-        toast.success(`Validation Successful! ${ name }`);
-        
-        // Proceed with your backend registration flow here...
+        // const formData = new FormData(e.currentTarget);
+        // const user = Object.fromEntries(formData.entries())
+
+        const { data, error } = await authClient.signUp.email({
+            email,
+            password,
+            name,
+            image,
+            callbackURL: "/dashboard" // A URL to redirect to after the user verifies their email (optional)
+        },
+        )
+
+        // console.log({ data, error }, ' data , error ')
+        if(data){
+            toast.success("Congratulations " + data.name + ". You have successfully created an account");
+            redirect('/');
+        }
+
+        if(error){
+            toast.error("Unexpected erro occured :  " + error.message)
+        }
+
+
     };
 
     return (
         <div className="min-h-[calc(100vh-68px)] flex items-center justify-center bg-base-200/50 py-10 px-4">
             <div className="bg-base-100 rounded-3xl shadow-xl overflow-hidden max-w-5xl w-full grid grid-cols-1 md:grid-cols-2 border border-base-200">
-                
+
                 {/* Left Column: Side Branding Panel */}
                 <div className="hidden md:flex flex-col justify-between bg-gradient-to-br from-primary/90 to-primary-dark bg-primary p-12 text-primary-content relative overflow-hidden">
                     <div className="absolute -top-10 -left-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
                     <div className="absolute -bottom-20 -right-20 w-60 h-60 bg-white/10 rounded-full blur-3xl"></div>
-                    
+
                     <div className="flex items-center gap-2 text-2xl font-bold tracking-tight">
                         <div className="p-2 bg-white/20 rounded-xl backdrop-blur-md">
                             <FaLightbulb className="text-xl text-yellow-300" />
@@ -95,12 +118,12 @@ const SignUpPage = () => {
                             </label>
                             <div className="input input-bordered flex items-center gap-3 rounded-xl bg-base-50 focus-within:outline-primary">
                                 <FaUser className="text-base-content/40 text-sm" />
-                                <input 
-                                    type="text" 
+                                <input
+                                    type="text"
                                     name="name"
-                                    placeholder="John Doe" 
-                                    className="grow text-sm bg-transparent border-none focus:outline-none" 
-                                    required 
+                                    placeholder="John Doe"
+                                    className="grow text-sm bg-transparent border-none focus:outline-none"
+                                    required
                                 />
                             </div>
                         </div>
@@ -112,12 +135,12 @@ const SignUpPage = () => {
                             </label>
                             <div className="input input-bordered flex items-center gap-3 rounded-xl bg-base-50 focus-within:outline-primary">
                                 <FaEnvelope className="text-base-content/40 text-sm" />
-                                <input 
-                                    type="email" 
+                                <input
+                                    type="email"
                                     name="email"
-                                    placeholder="johndoe@example.com" 
-                                    className="grow text-sm bg-transparent border-none focus:outline-none" 
-                                    required 
+                                    placeholder="Enter your email"
+                                    className="grow text-sm bg-transparent border-none focus:outline-none"
+                                    required
                                 />
                             </div>
                         </div>
@@ -129,12 +152,12 @@ const SignUpPage = () => {
                             </label>
                             <div className="input input-bordered flex items-center gap-3 rounded-xl bg-base-50 focus-within:outline-primary">
                                 <FaLink className="text-base-content/40 text-sm" />
-                                <input 
-                                    type="url" 
-                                    name="photoURL"
-                                    placeholder="https://example.com/avatar.jpg" 
-                                    className="grow text-sm bg-transparent border-none focus:outline-none" 
-                                    required 
+                                <input
+                                    type="url"
+                                    name="image"
+                                    placeholder="Enter yoru profile's url"
+                                    className="grow text-sm bg-transparent border-none focus:outline-none"
+
                                 />
                             </div>
                         </div>
@@ -146,12 +169,12 @@ const SignUpPage = () => {
                             </label>
                             <div className="input input-bordered flex items-center gap-3 rounded-xl bg-base-50 focus-within:outline-primary relative">
                                 <FaLock className="text-base-content/40 text-sm" />
-                                <input 
-                                    type={showPassword ? "text" : "password"} 
+                                <input
+                                    type={showPassword ? "text" : "password"}
                                     name="password"
-                                    placeholder="••••••••" 
-                                    className="grow text-sm bg-transparent border-none focus:outline-none pr-8" 
-                                    required 
+                                    placeholder="••••••••"
+                                    className="grow text-sm bg-transparent border-none focus:outline-none pr-8"
+                                    required
                                 />
                                 <button
                                     type="button"
@@ -188,10 +211,17 @@ const SignUpPage = () => {
                         )}
 
                         {/* Submit Button */}
-                        <button type="submit" className="btn btn-primary w-full rounded-xl font-bold mt-2">
+                        <button type="submit" className="btn btn-primary w-full font-bold mt-2">
                             Create Account
                         </button>
+
                     </form>
+                    <div className="">
+                        <button className="btn btn-outline w-full font-bold mt-2">
+                            <FcGoogle />  Continue with google
+                        </button>
+
+                    </div>
 
                     {/* Navigation Footer */}
                     <p className="text-center text-xs text-base-content/70 mt-6">
