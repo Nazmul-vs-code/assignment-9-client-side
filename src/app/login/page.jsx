@@ -3,6 +3,7 @@ import { authClient } from '@/lib/auth-client';
 import { redirect, useRouter } from 'next/navigation';
 
 import React from 'react';
+import { FcGoogle } from 'react-icons/fc';
 import { toast } from 'react-toastify';
 
 const LoginPage = () => {
@@ -21,7 +22,7 @@ const LoginPage = () => {
         });
 
         console.log({ data, error }, ' data , error ')
-        
+
         if (data) {
             toast.success(`Welcome back, ${data.user.name || 'User'}! You have successfully logged in.`);
             router.push('/');
@@ -32,9 +33,15 @@ const LoginPage = () => {
         }
     };
 
+    const handleGoogleSignIn = async () => {
+        const data = await authClient.signIn.social({
+            provider: "google",
+        })
+    }
+
     return (
         <div className='py-10 px-4'>
-            <div className='max-w-md mx-auto flex flex-col space-y-4'>
+            <div className='max-w-md mx-auto flex flex-col space-y-4 bg-base-100 border-2 border-gray-200 p-5'>
 
                 <h2 className='text-primary font-bold text-2xl md:text-3xl tracking-tight text-center'>
                     Welcome Back
@@ -73,6 +80,14 @@ const LoginPage = () => {
                         </button>
                     </fieldset>
                 </form>
+                <div className="">
+                    <button 
+                    onClick={handleGoogleSignIn}
+                    className="btn btn-outline w-full font-bold mt-2">
+                        <FcGoogle />  Continue with google
+                    </button>
+
+                </div>
             </div>
         </div>
     );

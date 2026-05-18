@@ -57,18 +57,23 @@ const SignUpPage = () => {
         )
 
         // console.log({ data, error }, ' data , error ')
-        if(data){
+        if (data) {
             toast.success("Congratulations " + data.name + ". You have successfully created an account");
             redirect('/');
         }
 
-        if(error){
+        if (error) {
             toast.error("Unexpected erro occured :  " + error.message)
         }
 
 
     };
 
+    const handleGoogleSignIn = async () => {
+        const data = await authClient.signIn.social({
+            provider: "google",
+        })
+    }
     return (
         <div className="min-h-[calc(100vh-68px)] flex items-center justify-center bg-base-200/50 py-10 px-4">
             <div className="bg-base-100 rounded-3xl shadow-xl overflow-hidden max-w-5xl w-full grid grid-cols-1 md:grid-cols-2 border border-base-200">
@@ -217,7 +222,9 @@ const SignUpPage = () => {
 
                     </form>
                     <div className="">
-                        <button className="btn btn-outline w-full font-bold mt-2">
+                        <button
+                        onClick={handleGoogleSignIn} 
+                        className="btn btn-outline w-full font-bold mt-2">
                             <FcGoogle />  Continue with google
                         </button>
 
