@@ -18,7 +18,7 @@ const MyInterActionPage = async () => {
     const myIdeaData = await res.json();
 
     return (
-        <div>
+        <div className='p-10 flex flex-col gap-2.5'>
             <h2 className="text-primary border-b-2 font-semibold text-3xl md:text-3xl tracking-tight">
                 My Interactions
             </h2>
