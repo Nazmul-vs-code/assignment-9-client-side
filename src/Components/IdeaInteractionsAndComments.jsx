@@ -41,8 +41,9 @@ const IdeaInteractionsAndComments = ({ ideaId }) => {
         const myComment = {
             id: Date.now(),
             ideaId: ideaId,
-            authorId: user.id,
-            userImage: user.image,
+            name: user?.name,
+            authorId: user?.id,
+            userImage: user?.image,
             text: text,
             currentDate: new Date().toISOString()
         };
