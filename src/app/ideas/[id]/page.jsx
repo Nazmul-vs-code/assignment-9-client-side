@@ -20,6 +20,13 @@ const IdeaDetailsPage = async ({ params }) => {
         );
     }
 
+    // --- SAFELY PARSE TAGS REGARDLESS OF MONGO DATA TYPE ---
+    const tags = Array.isArray(data.tags) 
+        ? data.tags 
+        : (typeof data.tags === 'string' && data.tags.trim() !== '') 
+            ? data.tags.split(',').map(t => t.trim()).filter(t => t !== '') 
+            : [];
+
     return (
         <div className="py-10 max-w-6xl mx-auto px-4">
             {/* Top Back/Category Navigation Bar */}
@@ -121,12 +128,12 @@ const IdeaDetailsPage = async ({ params }) => {
                             </div>
                         </div>
 
-                        {/* Tag Cloud */}
-                        {data.tags && data.tags.length > 0 && (
+                        {/* Tag Cloud using the cleaned tags array */}
+                        {tags.length > 0 && (
                             <div className="pt-2">
                                 <span className="text-xs font-semibold text-base-content/40 block mb-2">Tags</span>
                                 <div className="flex flex-wrap gap-1.5">
-                                    {data.tags.map((tag, idx) => (
+                                    {tags.map((tag, idx) => (
                                         <span key={idx} className="badge badge-sm badge-outline py-2.5 text-base-content/70">
                                             #{tag}
                                         </span>

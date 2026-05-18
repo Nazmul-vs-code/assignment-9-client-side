@@ -91,6 +91,12 @@ const Navbar = () => {
                     >
                         Login
                     </Link>
+                    <Link
+                        href="/signup"
+                        className="btn text-red-600 btn-outline rounded-full px-6"
+                    >
+                        Register
+                    </Link>
                 </div>
             </div>
         </div>
