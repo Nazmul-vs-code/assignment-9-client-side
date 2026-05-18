@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import ToggleTheme from "./ToggleTheme";
-import MyNavLink from "./MyNavLink"; 
+import MyNavLink from "./MyNavLink";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 
@@ -21,7 +21,7 @@ const Navbar = () => {
         });
     };
 
-    
+
     const navLinks = (
         <>
             <MyNavLink href="/">Home</MyNavLink>
@@ -79,50 +79,50 @@ const Navbar = () => {
                             <span className="hidden md:block font-medium text-sm text-base-content/80">
                                 {session.user.name}
                             </span>
-                            
+
                             {/* Avatar Dropdown wrapper */}
                             <div className="dropdown dropdown-end">
                                 <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar border border-base-300">
                                     <div className="w-10 rounded-full relative">
                                         <img
                                             alt={session.user.name || "User Avatar"}
-                                            src={session.user.image || "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"} 
+                                            src={session.user.image || "https://img.daisyui.com/images/profile/demo/yellingcat@192.webp"} 
                                         />
-                                    </div>
+                                            </div>
                                 </div>
-                                <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-2xl w-56 border border-base-200">
-                                    <li className="px-4 py-2 border-b border-base-200 mb-1 lg:hidden">
-                                        <p className="font-bold text-base-content truncate p-0">{session.user.name}</p>
-                                    </li>
-                                    <li>
-                                        <Link href="/profile" className="justify-between py-2">
-                                            My Profile
-                                            <span className="badge badge-primary badge-sm text-white">New</span>
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <button onClick={handleLogout} className="text-error font-medium hover:bg-error/10 py-2">
-                                            Logout
-                                        </button>
-                                    </li>
-                                </ul>
+                                    <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-2xl w-56 border border-base-200">
+                                        <li className="px-4 py-2 border-b border-base-200 mb-1 lg:hidden">
+                                            <p className="font-bold text-base-content truncate p-0">{session.user.name}</p>
+                                        </li>
+                                        <li>
+                                            <Link href="/profile" className="justify-between py-2">
+                                                My Profile
+                                                <span className="badge badge-primary badge-sm text-white">New</span>
+                                            </Link>
+                                        </li>
+                                        <li>
+                                            <button onClick={handleLogout} className="text-error font-medium hover:bg-error/10 py-2">
+                                                Logout
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
-                        </div>
-                    ) : (
-                        /* LOGGED OUT VIEW */
-                        <>
-                            <Link href="/login" className="btn btn-primary rounded-full px-6">
-                                Login
-                            </Link>
-                            <Link href="/signup" className="btn text-red-600 btn-outline rounded-full px-6 hidden sm:inline-flex">
-                                Register
-                            </Link>
-                        </>
+                            ) : (
+                            /* LOGGED OUT VIEW */
+                            <>
+                                <Link href="/login" className="btn btn-primary rounded-full px-6">
+                                    Login
+                                </Link>
+                                <Link href="/signup" className="btn text-red-600 btn-outline rounded-full px-6 hidden sm:inline-flex">
+                                    Register
+                                </Link>
+                            </>
                     )}
-                </div>
+                        </div>
             </div>
-        </div>
-    );
+            </div>
+            );
 };
 
-export default Navbar;
+            export default Navbar;
