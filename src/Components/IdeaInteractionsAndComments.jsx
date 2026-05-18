@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 import { FaRegHeart, FaHeart, FaCommentAlt, FaPaperPlane, FaEllipsisV, FaTrash, FaEdit } from 'react-icons/fa';
 import { toast } from 'react-toastify';
+import DeleteModal from './DeleteModal';
 
 const IdeaInteractionsAndComments = ({ ideaId }) => {
     const router = useRouter();
@@ -67,6 +68,9 @@ const IdeaInteractionsAndComments = ({ ideaId }) => {
         }
     };
 
+    // Delete comment functionalities 
+
+
     return (
         <div className="bg-base-100 border border-base-200 rounded-2xl shadow-sm overflow-hidden">
 
@@ -121,9 +125,20 @@ const IdeaInteractionsAndComments = ({ ideaId }) => {
                                                 </button>
                                             </li>
                                             <li>
-                                                <button type="button" className="py-2 gap-2 text-error hover:bg-error/10">
+                                                {/* 1. Trigger Button */}
+                                                <button
+                                                    type="button"
+                                                    onClick={() => document.getElementById(`delete_modal_${item.id}`).showModal()}
+                                                    className="py-2 gap-2 text-error hover:bg-error/10 w-full text-left flex items-center"
+                                                >
                                                     <FaTrash /> Delete
                                                 </button>
+
+                                                {/* 2. Modal Component Instance */}
+                                                <DeleteModal
+                                                    commentId={item.id}
+                                                    modalId={`delete_modal_${item.id}`}
+                                                />
                                             </li>
                                         </ul>
                                     </div>
