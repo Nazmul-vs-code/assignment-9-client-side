@@ -5,7 +5,12 @@ import IdeaInteractionsAndComments from '@/Components/IdeaInteractionsAndComment
 const IdeaDetailsPage = async ({ params }) => {
     const { id } = await params;
 
-    const fetchDetails = await fetch(`${process.env.SERVER_URI}/ideas/${id}`);
+    const fetchDetails = await fetch(`${process.env.SERVER_URI}/ideas/${id}` , {
+        headers: {
+            authorization: 'logged out'
+        }
+    });
+    
     const data = await fetchDetails.json();
 
     if (!data || data.message) {
