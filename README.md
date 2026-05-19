@@ -1,36 +1,30 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+IdeaVault 💡
+Live Website URL: https://ideavault-six.vercel.app/
 
-## Getting Started
+Welcome to IdeaVault, a modern web application designed for innovators, builders, and entrepreneurs to securely store, organize, and track their startup ideas and tech innovations.
 
-First, run the development server:
+🚀 Key Features
+Secure Authentication Ecosystem: Built-in secure user profile tracking utilizing asynchronous JWKS validation headers, protecting sensitive user ideas and preventing cross-origin token leaks.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+The Idea Vault Dashboard: A dedicated space for authenticated users to review, track, and manage their personal innovative concepts seamlessly.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Dynamic Search & Filtering: Instant, reactive client-side catalog navigation allowing users to filter startup ideas by text matching or designated industry categories (AI, Tech, Health, E-commerce, etc.).
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+Full CRUD Interactive Sandbox: Complete data freedom enabling creators to seamlessly submit new ideas, update technical text targets via dynamic modals, or remove stale records safely.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Decoupled Microservice Architecture: Powered by a dual-stack configuration combining a performant, case-insensitive Next.js frontend with an isolated Express backend cluster connected to MongoDB Atlas.
 
-## Learn More
+🛠️ Tech Stack & Architecture
+Frontend
+Framework: Next.js (App Router, Client Components)
 
-To learn more about Next.js, take a look at the following resources:
+Styles: Tailwind CSS & DaisyUI
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Auth Client: Better-Auth (with remote token serialization handlers)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Backend (API Server)
+Runtime: Node.js with Express
 
-## Deploy on Vercel
+Database: MongoDB Atlas (via native driver layers)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Security Integration: jose-cjs cryptographic middleware for stateless remote JSON Web Token (JWT) validation signatures.
