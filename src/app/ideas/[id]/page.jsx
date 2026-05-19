@@ -1,6 +1,6 @@
 import React, { cache } from 'react';
 import { FaDollarSign, FaUsers, FaExclamationTriangle, FaCheckCircle, FaCalendarAlt, FaLock } from 'react-icons/fa';
-import IdeaInteractionsAndComments from '@/Components/IdeaInteractionsAndComments';
+import IdeaInteractionsAndComments from '@/components/IdeaInteractionsAndComments';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 

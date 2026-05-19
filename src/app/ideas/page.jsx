@@ -1,6 +1,6 @@
 "use client";
 
-import IdeaCard from '@/Components/IdeaCard';
+import IdeaCard from '@/components/IdeaCard';
 import React, { useState, useEffect } from 'react';
 
 const IdeasPage = () => {

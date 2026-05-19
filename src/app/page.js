@@ -1,7 +1,7 @@
-import CategoryCharts from "@/Components/CategoryCharts";
-import HeroSlider from "@/Components/Heros/HeroSlider";
-import Section2ForHome from "@/Components/Section2ForHome";
-import TrendingIdeas from "@/Components/TrendingIdeas";
+import CategoryCharts from "@/components/CategoryCharts";
+import HeroSlider from "@/components/Heros/HeroSlider";
+import Section2ForHome from "@/components/Section2ForHome";
+import TrendingIdeas from "@/components/TrendingIdeas";
 import Image from "next/image";
 
 export default function Home() {

@@ -1,11 +1,11 @@
 'use client'
 import React from 'react';
 import { toast } from 'react-toastify';
-import { authClient } from '@/lib/auth-client'; 
+import { authClient } from '@/lib/auth-client';
 
 const AddIdeasPage = () => {
-   
-    
+
+
     const { data: session } = authClient.useSession();
     const user = session?.user;
 
@@ -25,10 +25,14 @@ const AddIdeasPage = () => {
             authorId: user?.id || user?._id
         };
 
+        const { data: tokenData } = await authClient.token();
+        console.log(tokenData, ' tokendata in add idea ')
+
         const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URI}/ideas`, {
             method: 'POST',
             headers: {
-                'content-type': 'application/json'
+                'content-type': 'application/json',
+                authorization: `Bearer ${tokenData?.token}`
             },
             body: JSON.stringify(idea)
         });

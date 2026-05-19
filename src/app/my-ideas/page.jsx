@@ -3,7 +3,7 @@
 import { authClient } from '@/lib/auth-client';
 import React, { useState, useEffect } from 'react';
 import DeleteIdeaModal from '@/components/DeleteIdeaModal';
-import EditMyIdeaModal from '@/Components/EditMyIdeaModal';
+import EditMyIdeaModal from '@/components/EditMyIdeaModal';
 
 const MyIdeasPage = () => {
     const { data: session, isPending } = authClient.useSession();
@@ -19,19 +19,44 @@ const MyIdeasPage = () => {
             return;
         }
 
-        fetch(`${process.env.NEXT_PUBLIC_SERVER_URI}/my-ideas?authorId=${user.id}`)
-            .then((res) => {
-                if (res.ok) return res.json();
-                throw new Error("Failed to load vault items.");
-            })
-            .then((data) => {
+        
+        const getVaultData = async () => {
+            try {
+                
+                const tokenInfo = await authClient.token();
+                
+                
+                const token = tokenInfo?.data?.token
+                
+                
+                // console.log("Extracted Token String inside Vault:", token);
+
+                
+                const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URI}/my-ideas?authorId=${user.id}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        
+                        
+                        ...(token && { 'Authorization': `Bearer ${token}` })
+                    }
+                });
+
+                if (!res.ok) throw new Error("Failed to load vault items.");
+                
+                const data = await res.json();
                 setIdeas(data);
-                setLoading(false);
-            })
-            .catch((err) => {
+            } catch (err) {
                 console.error("Error fetching vault data:", err);
+            } finally {
                 setLoading(false);
-            });
+            }
+        };
+
+        getVaultData();
+       
+        
+
     }, [user?.id, isPending]);
 
     if (loading || isPending) {
