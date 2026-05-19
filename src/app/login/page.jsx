@@ -1,5 +1,6 @@
 'use client'
 import { authClient } from '@/lib/auth-client';
+import Link from 'next/link';
 import { redirect, useRouter } from 'next/navigation';
 
 import React from 'react';
@@ -62,7 +63,6 @@ const LoginPage = () => {
                                     required
                                 />
                             </div>
-
                             <div>
                                 <label className="label-text block mb-1 font-medium text-xs">Password</label>
                                 <input
@@ -72,6 +72,7 @@ const LoginPage = () => {
                                     placeholder="••••••••"
                                     required
                                 />
+
                             </div>
                         </div>
                         <div className="flex gap-2 justify-between">
@@ -85,6 +86,7 @@ const LoginPage = () => {
                         </div>
                     </fieldset>
                 </form>
+
                 <div className="">
                     <button
                         onClick={handleGoogleSignIn}
@@ -92,6 +94,14 @@ const LoginPage = () => {
                         <FcGoogle />  Continue with google
                     </button>
 
+                </div>
+                <div className="pt-4 border-t border-base-200 text-center">
+                    <Link href="/signup" className="group text-sm text-base-content/70 hover:text-primary transition-colors duration-200">
+                        Don't have an account?{" "}
+                        <span className="text-primary font-semibold underline underline-offset-4 group-hover:text-primary-focus">
+                            Register
+                        </span>
+                    </Link>
                 </div>
             </div>
         </div>
