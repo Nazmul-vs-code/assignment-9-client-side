@@ -1,5 +1,6 @@
 import CategoryCharts from "@/Components/CategoryCharts";
 import HeroSlider from "@/Components/Heros/HeroSlider";
+import Section2ForHome from "@/Components/Section2ForHome";
 import TrendingIdeas from "@/Components/TrendingIdeas";
 import Image from "next/image";
 
@@ -28,6 +29,10 @@ export default function Home() {
         <div className="flex justify-center items-center w-full">
           <CategoryCharts />
         </div>
+      </div>
+
+      <div>
+        <Section2ForHome />
       </div>
     </div>
   );
