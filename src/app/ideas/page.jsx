@@ -12,6 +12,8 @@ const IdeasPage = () => {
     // Hardcoded categories list  
     const categories = ["Education", "AI", "Health", "E-commerce", "Food", "Tech"];
 
+    
+
     useEffect(() => {
         setLoading(true);
         
@@ -24,7 +26,9 @@ const IdeasPage = () => {
         // 2. Fetch data from backend using the built query structure
         const targetUrl = `${process.env.NEXT_PUBLIC_SERVER_URI}/ideas?${queryParams.toString()}`;
         
-        fetch(targetUrl)
+        fetch(targetUrl , {
+
+        })
             .then((res) => {
                 if (!res.ok) throw new Error("Network response was not ok");
                 return res.json();

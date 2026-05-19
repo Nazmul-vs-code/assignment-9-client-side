@@ -1,17 +1,52 @@
-import React from 'react';
-import { FaDollarSign, FaUsers, FaExclamationTriangle, FaCheckCircle, FaCalendarAlt } from 'react-icons/fa';
+import React, { cache } from 'react';
+import { FaDollarSign, FaUsers, FaExclamationTriangle, FaCheckCircle, FaCalendarAlt, FaLock } from 'react-icons/fa';
 import IdeaInteractionsAndComments from '@/Components/IdeaInteractionsAndComments';
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
 
 const IdeaDetailsPage = async ({ params }) => {
     const { id } = await params;
+    const {token} = await auth.api.getToken({
+        headers: await headers()
+    })
+
+    // const tokendata = await token;
+    // console.log(token , ' token in details page')
 
     const fetchDetails = await fetch(`${process.env.SERVER_URI}/ideas/${id}` , {
         headers: {
-            authorization: 'logged out'
+            authorization: `Bearer ${token}`
         }
-    });
-    
+    }
+ );
+    // console.log(fetchDetails.status , ' status ')
+
     const data = await fetchDetails.json();
+
+    if (fetchDetails.status === 401) {
+        return (
+            <div className="min-h-[60vh] flex items-center justify-center px-4">
+                <div className="max-w-md w-full bg-base-100 border border-base-200 p-8 rounded-3xl shadow-xl text-center space-y-5">
+                    <div className="w-16 h-16 bg-error/10 text-error rounded-2xl flex items-center justify-center text-2xl mx-auto shadow-sm">
+                        <FaLock />
+                    </div>
+                    <div>
+                        <h3 className="font-extrabold text-2xl text-base-content tracking-tight">
+                            Access Restricted
+                        </h3>
+                        <p className="text-sm text-base-content/60 mt-2 leading-relaxed">
+                            Your secure backend middleware blocked this request. Please log in with an authorized session account to view these vision vault metrics.
+                        </p>
+                    </div>
+                    <div className="pt-2">
+                        <a href="/login" className="btn btn-primary btn-block rounded-xl font-bold shadow-md">
+                            Go to Login
+                        </a>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     if (!data || data.message) {
         return (
